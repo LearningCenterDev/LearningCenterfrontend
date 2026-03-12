@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Sparkles, UserRound } from "lucide-react";
+import { Menu, X, UserRound, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import logoImage from "@assets/learn_1763122469047.png";
-
+import { useAuth } from "@/hooks/useAuth";
 import Favicon from "@assets/Favicon.png";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [location] = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -86,16 +86,28 @@ export default function Navbar() {
                 </Link>
               ))}
               
-              {/* Login Button */}
-              <Link href="/login" className="ml-3">
-                <Button
-                  className="bg-gradient-to-r from-[#2FBF71] to-[#25a060] hover:from-[#25a060] hover:to-[#1f8a50] text-white font-semibold shadow-lg shadow-[#2FBF71]/25 hover:shadow-[#2FBF71]/40 transition-all border-0 px-5"
-                  data-testid="button-nav-login"
-                >
-                  <UserRound className="w-4 h-4 mr-2" />
-                  Login
-                </Button>
-              </Link>
+              {/* Dashboard / Login Button */}
+              {isAuthenticated ? (
+                <Link href="/dashboard" className="ml-3">
+                  <Button
+                    className="bg-gradient-to-r from-[#1F3A5F] to-[#2a4a75] hover:from-[#2a4a75] hover:to-[#345b8f] text-white font-semibold shadow-lg shadow-[#1F3A5F]/25 transition-all border-0 px-5"
+                    data-testid="button-nav-dashboard"
+                  >
+                    <LayoutDashboard className="w-4 h-4 mr-2" />
+                    Dashboard
+                  </Button>
+                </Link>
+              ) : (
+                <Link href="/login" className="ml-3">
+                  <Button
+                    className="bg-gradient-to-r from-[#2FBF71] to-[#25a060] hover:from-[#25a060] hover:to-[#1f8a50] text-white font-semibold shadow-lg shadow-[#2FBF71]/25 hover:shadow-[#2FBF71]/40 transition-all border-0 px-5"
+                    data-testid="button-nav-login"
+                  >
+                    <UserRound className="w-4 h-4 mr-2" />
+                    Login
+                  </Button>
+                </Link>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -142,19 +154,35 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="px-6 py-5 bg-muted/30">
-                <Link href="/login" onClick={() => {
-                  setOpen(false);
-                  window.scrollTo(0, 0);
-                }}>
-                  <Button
-                    size="default"
-                    className="w-full bg-gradient-to-r from-[#2FBF71] to-[#25a060] hover:from-[#25a060] hover:to-[#1f8a50] text-white font-semibold shadow-lg shadow-[#2FBF71]/25"
-                    data-testid="button-mobile-login"
-                  >
-                    <UserRound className="w-5 h-5 mr-2" />
-                    Login
-                  </Button>
-                </Link>
+                {isAuthenticated ? (
+                  <Link href="/dashboard" onClick={() => {
+                    setOpen(false);
+                    window.scrollTo(0, 0);
+                  }}>
+                    <Button
+                      size="default"
+                      className="w-full bg-gradient-to-r from-[#1F3A5F] to-[#2a4a75] text-white font-semibold shadow-lg"
+                      data-testid="button-mobile-dashboard"
+                    >
+                      <LayoutDashboard className="w-5 h-5 mr-2" />
+                      Dashboard
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="/login" onClick={() => {
+                    setOpen(false);
+                    window.scrollTo(0, 0);
+                  }}>
+                    <Button
+                      size="default"
+                      className="w-full bg-gradient-to-r from-[#2FBF71] to-[#25a060] hover:from-[#25a060] hover:to-[#1f8a50] text-white font-semibold shadow-lg shadow-[#2FBF71]/25"
+                      data-testid="button-mobile-login"
+                    >
+                      <UserRound className="w-5 h-5 mr-2" />
+                      Login
+                    </Button>
+                  </Link>
+                )}
               </div>
             </motion.div>
           )}
