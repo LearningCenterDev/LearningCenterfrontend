@@ -19,13 +19,14 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
+    host: true, // Listen on all local IP addresses
     proxy: {
       "/api": {
-        target: "http://localhost:5001",
+        target: "http://127.0.0.1:8000",
         changeOrigin: true,
       },
       "/ws": {
-        target: "http://localhost:5001",
+        target: "http://127.0.0.1:8000",
         ws: true,
       },
     },

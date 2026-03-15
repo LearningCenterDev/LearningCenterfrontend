@@ -137,7 +137,7 @@ export default function ProfileForm({ user, onSuccess }: { user: UserType; onSuc
                     )} />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField control={form.control} name="city" render={({ field }) => (
-                            <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} value={field.value || ""} placeholder="City" data-testid="input-city" /></FormControl><FormMessage /></FormMessage>
+                            <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} value={field.value || ""} placeholder="City" data-testid="input-city" /></FormControl><FormMessage /></FormItem>
                         )} />
                         <FormField control={form.control} name="state" render={({ field }) => (
                             <FormItem><FormLabel>State</FormLabel><FormControl><Input {...field} value={field.value || ""} placeholder="State" data-testid="input-state" /></FormControl><FormMessage /></FormItem>
