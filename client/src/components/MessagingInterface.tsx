@@ -9,7 +9,7 @@ import { Send, Search, Users, Plus, ArrowLeft, MessageSquare, Paperclip, X, File
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { queryClient } from "@/lib/queryClient";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import type { Message, User, MessageAttachment } from "@shared/schema";
 import { format, formatDistanceToNow } from "date-fns";
 import { useLocation } from "wouter";
@@ -219,11 +219,7 @@ export default function MessagingInterface({ currentUserId }: MessagingInterface
       );
       
       unreadMessages.forEach(msg => {
-        fetch(`/api/messages/${msg.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ isRead: true }),
-        }).then(() => {
+        apiRequest("PATCH", `/api/messages/${msg.id}`, { isRead: true }).then(() => {
           queryClient.invalidateQueries({ queryKey: ["/api/users", currentUserId, "messages"] });
         });
       });

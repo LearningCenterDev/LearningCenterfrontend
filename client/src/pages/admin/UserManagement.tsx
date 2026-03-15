@@ -147,20 +147,8 @@ function AddUserForm({ onSuccess, onCancel }: { onSuccess: () => void; onCancel:
   // Create user mutation
   const createUserMutation = useMutation({
     mutationFn: async (userData: InsertUser) => {
-      const response = await fetch("/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to create user");
-      }
-      
-      return response.json();
+      const response = await apiRequest("POST", "/api/users", userData);
+      return await response.json();
     },
     onSuccess: (newUser: User) => {
       // Invalidate queries to refresh data
@@ -830,16 +818,7 @@ export default function UserManagement({ adminId }: UserManagementProps) {
   // Delete user mutation
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const response = await fetch(`/api/users/${userId}`, {
-        method: "DELETE",
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || error.message || "Failed to delete user");
-      }
-      
-      // 204 No Content - no response body
+      await apiRequest("DELETE", `/api/users/${userId}`);
       return null;
     },
     onSuccess: (_, userId) => {

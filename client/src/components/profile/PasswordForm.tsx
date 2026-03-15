@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 const passwordChangeSchema = z.object({
     currentPassword: z.string().min(1, "Current password is required"),
@@ -28,15 +29,10 @@ export default function PasswordForm({ userId, onSuccess }: { userId: string; on
 
     const changePasswordMutation = useMutation({
         mutationFn: async (data: PasswordChangeData) => {
-            const response = await fetch(`/api/users/${userId}/change-password`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ currentPassword: data.currentPassword, newPassword: data.newPassword }),
+            const response = await apiRequest("POST", "/api/auth/change-password", {
+                current_password: data.currentPassword,
+                new_password: data.newPassword,
             });
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || "Failed to change password");
-            }
             return response.json();
         },
         onSuccess: () => {

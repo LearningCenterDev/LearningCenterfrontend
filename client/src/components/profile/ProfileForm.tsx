@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { queryClient } from "@/lib/queryClient";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { insertUserSchema, type User as UserType } from "@shared/schema";
 
 const profileUpdateSchema = insertUserSchema.pick({
@@ -59,18 +59,16 @@ export default function ProfileForm({ user, onSuccess }: { user: UserType; onSuc
 
     const updateProfileMutation = useMutation({
         mutationFn: async (data: ProfileUpdateData) => {
-            const updateData = { ...data, name: `${data.firstName} ${data.lastName}`.trim() };
-            const response = await fetch(`/api/users/${user.id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updateData),
-            });
-            if (!response.ok) throw new Error("Failed to update profile");
+            // Convert empty date string to null for backend validation
+            const payload = {
+                ...data,
+                dateOfBirth: data.dateOfBirth === "" ? null : data.dateOfBirth,
+            };
+            const response = await apiRequest("PATCH", "/api/auth/user", payload);
             return response.json();
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-            queryClient.invalidateQueries({ queryKey: [`/api/users/${user.id}`] });
             toast({ title: "Profile updated", description: "Your profile information has been saved." });
             onSuccess();
         },

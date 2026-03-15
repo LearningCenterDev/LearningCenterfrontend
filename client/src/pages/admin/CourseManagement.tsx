@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 interface CourseWithStats extends Course {
   studentCount: number;
@@ -113,12 +114,7 @@ export default function CourseManagement({ adminId }: CourseManagementProps) {
   // Change teacher mutation
   const changeTeacherMutation = useMutation({
     mutationFn: async ({ courseId, newTeacherId }: { courseId: string; newTeacherId: string; oldTeacherId?: string }) => {
-      const response = await fetch(`/api/courses/${courseId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ teacherId: newTeacherId }),
-      });
-      if (!response.ok) throw new Error("Failed to update teacher");
+      const response = await apiRequest("PATCH", `/api/courses/${courseId}`, { teacherId: newTeacherId });
       return response.json();
     },
     onSuccess: (_, variables) => {

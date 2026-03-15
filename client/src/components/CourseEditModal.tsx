@@ -187,7 +187,7 @@ export function CourseEditModal({ isOpen, onClose, course }: CourseEditModalProp
     mutationFn: async (courseData: Partial<Course>) => {
       if (!course?.id) throw new Error("No course ID provided");
       
-      const response = await apiRequest("PUT", `/api/courses/${course.id}`, courseData);
+      const response = await apiRequest("PATCH", `/api/courses/${course.id}`, courseData);
       return await response.json();
     },
     onSuccess: (_, variables) => {

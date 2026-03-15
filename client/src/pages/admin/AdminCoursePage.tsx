@@ -87,7 +87,7 @@ export default function AdminCoursePage({ courseId, adminId }: AdminCoursePagePr
   // Approve enrollment mutation
   const approveEnrollmentMutation = useMutation({
     mutationFn: async ({ enrollmentId, studentId }: { enrollmentId: string; studentId: string }) => {
-      return await apiRequest('PUT', `/api/enrollments/${enrollmentId}/approve`);
+      return await apiRequest('PATCH', `/api/enrollments/${enrollmentId}/approve`);
     },
     onSuccess: (_, variables) => {
       toast({
@@ -116,7 +116,7 @@ export default function AdminCoursePage({ courseId, adminId }: AdminCoursePagePr
   // Reject enrollment mutation
   const rejectEnrollmentMutation = useMutation({
     mutationFn: async ({ enrollmentId, reason, studentId }: { enrollmentId: string; reason: string; studentId: string }) => {
-      return await apiRequest('PUT', `/api/enrollments/${enrollmentId}/reject`, {
+      return await apiRequest('PATCH', `/api/enrollments/${enrollmentId}/reject`, {
         rejectionReason: reason,
       });
     },
@@ -243,7 +243,7 @@ export default function AdminCoursePage({ courseId, adminId }: AdminCoursePagePr
   // Update curriculum mutation
   const updateCurriculumMutation = useMutation({
     mutationFn: async (curriculum: Array<{ heading: string; description: string }>) => {
-      return await apiRequest('PUT', `/api/courses/${courseId}`, {
+      return await apiRequest('PATCH', `/api/courses/${courseId}`, {
         curriculum,
       });
     },
@@ -268,7 +268,7 @@ export default function AdminCoursePage({ courseId, adminId }: AdminCoursePagePr
   // Update teacher assignment mutation
   const updateTeacherAssignmentMutation = useMutation({
     mutationFn: async ({ assignmentId, teacherId, studentId }: { assignmentId: string; teacherId: string; studentId: string }) => {
-      return await apiRequest('PUT', `/api/student-teacher-assignments/${assignmentId}`, {
+      return await apiRequest('PATCH', `/api/student-teacher-assignments/${assignmentId}`, {
         teacherId,
       });
     },

@@ -785,12 +785,7 @@ function FeePlansTab() {
         ...data,
         ratePerClass: data.ratePerClass,
       };
-      const response = await fetch(`/api/admin/fee-plans/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) throw new Error(await response.text());
+      const response = await apiRequest("PATCH", `/api/admin/fee-plans/${id}`, payload);
       return response.json();
     },
     onSuccess: () => {

@@ -4,8 +4,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Save } from "lucide-react";
 import { getBrowserTimezone, COMMON_TIMEZONES, type TimezoneOption } from "@/lib/timezone";
-import { useToast } from "@/hooks/use-toast";
-import { queryClient } from "@/lib/queryClient";
+import { toast } from "@/hooks/use-toast";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import type { User as UserType } from "@shared/schema";
 
 export default function PreferencesForm({ user, onSuccess }: { user: UserType; onSuccess: () => void }) {
@@ -16,15 +16,8 @@ export default function PreferencesForm({ user, onSuccess }: { user: UserType; o
     const handleSaveTimezone = async () => {
         setIsSaving(true);
         try {
-            const response = await fetch(`/api/users/${user.id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({ timezone: selectedTimezone }),
-            });
-            if (!response.ok) throw new Error("Failed to update timezone");
-            queryClient.invalidateQueries({ queryKey: ["/api/auth/session"] });
-            queryClient.invalidateQueries({ queryKey: ["/api/users", user.id] });
+            await apiRequest("PATCH", "/api/auth/user", { timezone: selectedTimezone });
+            queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
             toast({ title: "Preferences Updated", description: "Your timezone preference has been saved." });
             onSuccess();
         } catch (error: any) {

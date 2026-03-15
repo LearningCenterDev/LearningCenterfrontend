@@ -746,7 +746,12 @@ export default function AdminUserDetailPage() {
   // Mutations
   const updateUserMutation = useMutation({
     mutationFn: async (updates: Partial<UserType>) => {
-      const response = await apiRequest("PUT", `/api/users/${userId}`, updates);
+      // Fix for dateOfBirth becoming empty string which causes 422 error on backend
+      const payload = {
+        ...updates,
+        dateOfBirth: updates.dateOfBirth === "" ? null : updates.dateOfBirth,
+      };
+      const response = await apiRequest("PATCH", `/api/users/${userId}`, payload);
       return response.json();
     },
     onSuccess: () => {
@@ -768,7 +773,7 @@ export default function AdminUserDetailPage() {
 
   const toggleSuspendMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("PUT", `/api/users/${userId}`, {
+      const response = await apiRequest("PATCH", `/api/users/${userId}`, {
         isActive: !user?.isActive,
       });
       return response.json();

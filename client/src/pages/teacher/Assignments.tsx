@@ -96,7 +96,7 @@ export default function TeacherAssignments({ teacherId }: TeacherAssignmentsProp
 
   const updateDueDateMutation = useMutation({
     mutationFn: async ({ assignmentId, dueDate }: { assignmentId: string; dueDate: Date }) => {
-      const response = await apiRequest("PUT", `/api/assignments/${assignmentId}`, {
+      const response = await apiRequest("PATCH", `/api/assignments/${assignmentId}`, {
         dueDate: dueDate.toISOString(),
       });
       return response.json();

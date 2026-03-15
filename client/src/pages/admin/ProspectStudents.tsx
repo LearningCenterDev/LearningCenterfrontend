@@ -171,7 +171,7 @@ export default function ProspectStudents({ adminId }: ProspectStudentsProps) {
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      return apiRequest("PUT", `/api/admin/prospect-students/${id}`, { status });
+      return apiRequest("PATCH", `/api/admin/prospect-students/${id}`, { status });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/prospect-students'] });
@@ -192,7 +192,7 @@ export default function ProspectStudents({ adminId }: ProspectStudentsProps) {
 
   const updateNotesMutation = useMutation({
     mutationFn: async ({ id, notes }: { id: string; notes: string }) => {
-      return apiRequest("PUT", `/api/admin/prospect-students/${id}`, { notes });
+      return apiRequest("PATCH", `/api/admin/prospect-students/${id}`, { notes });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/prospect-students'] });
