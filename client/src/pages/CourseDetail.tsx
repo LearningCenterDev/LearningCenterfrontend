@@ -1,6 +1,6 @@
 import { Link, useParams } from "wouter";
 import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { 
   BookOpen, Clock, Users, ArrowLeft, CheckCircle2, 
   Play, Award, Target, Search, GraduationCap,
@@ -13,6 +13,15 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/hooks/useAuth";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { 
+  Dialog, DialogContent, DialogDescription, DialogFooter, 
+  DialogHeader, DialogTitle, DialogTrigger 
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 import type { Course, User } from "@shared/schema";
 
 interface CourseWithTeacher extends Course {
@@ -22,6 +31,38 @@ interface CourseWithTeacher extends Course {
 export default function CourseDetail() {
   const params = useParams();
   const id = params.id;
+  const { user, isAuthenticated } = useAuth();
+  const { toast } = useToast();
+  const [enrollNotes, setEnrollNotes] = useState("");
+  const [isEnrollDialogOpen, setIsEnrollDialogOpen] = useState(false);
+
+  const enrollmentMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Please log in to enroll");
+      return await apiRequest('POST', '/api/enrollments/request', {
+        courseId: id,
+        studentId: user.id,
+        parentId: user.parentId || user.id, // Fallback if no parent
+        notes: enrollNotes
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Request Sent",
+        description: "Your enrollment request has been submitted to your parent/admin for approval.",
+      });
+      setIsEnrollDialogOpen(false);
+      setEnrollNotes("");
+      queryClient.invalidateQueries({ queryKey: ["/api/enrollments/my-requests"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Enrollment Failed",
+        description: error.message || "Failed to submit enrollment request",
+        variant: "destructive"
+      });
+    }
+  });
 
   const { data: course, isLoading, error } = useQuery<CourseWithTeacher>({
     queryKey: ["/api/courses", id],
@@ -197,16 +238,66 @@ export default function CourseDetail() {
                   <p className="text-slate-600 text-sm">Begin your learning journey today</p>
                 </div>
 
-                <Link href="/contact">
-                  <Button
-                    className="w-full mb-5 bg-[#2FBF71] hover:bg-[#25a060] text-white h-12 rounded-xl font-semibold shadow-lg shadow-[#2FBF71]/25 transition-all hover:shadow-xl"
-                    size="lg"
-                    data-testid="button-enroll-now"
-                  >
-                    <MessageCircle className="w-5 h-5 mr-2" />
-                    Enroll Now
-                  </Button>
-                </Link>
+                <Dialog open={isEnrollDialogOpen} onOpenChange={setIsEnrollDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      className="w-full mb-5 bg-[#2FBF71] hover:bg-[#25a060] text-white h-12 rounded-xl font-semibold shadow-lg shadow-[#2FBF71]/25 transition-all hover:shadow-xl"
+                      size="lg"
+                      data-testid="button-enroll-now"
+                    >
+                      <MessageCircle className="w-5 h-5 mr-2" />
+                      Enroll Now
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Enroll in {course.title}</DialogTitle>
+                      <DialogDescription>
+                        {isAuthenticated 
+                          ? "Submit your enrollment request. Your parent or an administrator will need to approve it."
+                          : "Please log in to your account to enroll in this course."}
+                      </DialogDescription>
+                    </DialogHeader>
+                    {isAuthenticated ? (
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Notes (Optional)</label>
+                          <Textarea 
+                            placeholder="Tell us why you want to take this course or add any special requests..."
+                            value={enrollNotes}
+                            onChange={(e) => setEnrollNotes(e.target.value)}
+                            className="min-h-[100px]"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="py-6 flex justify-center">
+                        <Link href="/login">
+                          <Button className="bg-[#1F3A5F]">Go to Login</Button>
+                        </Link>
+                      </div>
+                    )}
+                    <DialogFooter>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setIsEnrollDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      {isAuthenticated && (
+                        <Button
+                          type="button"
+                          className="bg-[#2FBF71] hover:bg-[#25a060]"
+                          onClick={() => enrollmentMutation.mutate()}
+                          disabled={enrollmentMutation.isPending}
+                        >
+                          {enrollmentMutation.isPending ? "Submitting..." : "Submit Request"}
+                        </Button>
+                      )}
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
 
                 <div className="space-y-3">
                   {[

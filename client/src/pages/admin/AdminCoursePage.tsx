@@ -87,7 +87,10 @@ export default function AdminCoursePage({ courseId, adminId }: AdminCoursePagePr
   // Approve enrollment mutation
   const approveEnrollmentMutation = useMutation({
     mutationFn: async ({ enrollmentId, studentId }: { enrollmentId: string; studentId: string }) => {
-      return await apiRequest('PATCH', `/api/enrollments/${enrollmentId}/approve`);
+      // Corrected to use our new state-machine endpoint
+      return await apiRequest('PATCH', `/api/enrollments/request/${enrollmentId}`, {
+        status: 'admin_approved'
+      });
     },
     onSuccess: (_, variables) => {
       toast({
@@ -116,7 +119,9 @@ export default function AdminCoursePage({ courseId, adminId }: AdminCoursePagePr
   // Reject enrollment mutation
   const rejectEnrollmentMutation = useMutation({
     mutationFn: async ({ enrollmentId, reason, studentId }: { enrollmentId: string; reason: string; studentId: string }) => {
-      return await apiRequest('PATCH', `/api/enrollments/${enrollmentId}/reject`, {
+      // Corrected to use our new state-machine endpoint
+      return await apiRequest('PATCH', `/api/enrollments/request/${enrollmentId}`, {
+        status: 'rejected',
         rejectionReason: reason,
       });
     },
