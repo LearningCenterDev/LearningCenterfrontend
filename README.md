@@ -6,11 +6,10 @@ A modern, responsive eLearning dashboard built with React, Vite, and shadcn/ui.
 
 The frontend provide a high-fidelity user interface for four distinct user roles: Students, Parents, Teachers, and Administrators. It focuses on a premium aesthetic, ease of use, and real-time data visualization.
 
-### Key Architectural Concepts
-
 - **Role-Based Experience**: Tailored dashboards and features for each user role.
 - **Component-Driven Design**: Highly reusable UI components powered by shadcn/ui and Tailwind CSS.
 - **State Management**: Using `react-query` for efficient server-state management, caching, and synchronization.
+- **Enrollment Interface**: Integrated enrollment request dialogs with instant state updates.
 - **API Proxying**: During development, Vite proxies requests to the backend server, allowing for a seamless single-repo developer experience while maintaining architectural separation.
 
 ---
