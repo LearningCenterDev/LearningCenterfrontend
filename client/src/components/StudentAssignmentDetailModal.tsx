@@ -64,22 +64,22 @@ export function StudentAssignmentDetailModal({
   const [submissionText, setSubmissionText] = useState("");
 
   const { data: assignment, isLoading: isAssignmentLoading } = useQuery<AssignmentWithRelations>({
-    queryKey: [`/api/assignments/${assignmentId}`],
+    queryKey: [`/api/v1/assignments/${assignmentId}`],
     enabled: isOpen && !!assignmentId,
   });
 
   const { data: existingSubmission, isLoading: isSubmissionLoading } = useQuery<SubmissionWithRelations>({
-    queryKey: [`/api/assignments/${assignmentId}/submissions/student/${studentId}`],
+    queryKey: [`/api/v1/submissions?assignment_id=${assignmentId}&student_id=${studentId}`],
     enabled: isOpen && !!assignmentId,
   });
 
   const { data: course } = useQuery<Course>({
-    queryKey: [`/api/courses/${assignment?.courseId}`],
+    queryKey: [`/api/v1/courses/${assignment?.courseId}`],
     enabled: isOpen && !!assignment?.courseId,
   });
 
   const { data: teacher } = useQuery<UserType>({
-    queryKey: [`/api/users/${course?.teacherId}`],
+    queryKey: [`/api/v1/users/${course?.teacherId}`],
     enabled: isOpen && !!course?.teacherId,
   });
 
@@ -133,7 +133,7 @@ export function StudentAssignmentDetailModal({
         formData.append('assignmentId', assignmentId);
         formData.append('studentId', studentId);
 
-        const uploadResponse = await fetch('/api/submissions/attachments/upload', {
+        const uploadResponse = await fetch('/api/v1/submissions/attachments/upload', {
           method: 'POST',
           body: formData,
           credentials: 'include',
@@ -206,7 +206,7 @@ export function StudentAssignmentDetailModal({
 
   const createSubmissionMutation = useMutation({
     mutationFn: async (data: { submissionText: string }) => {
-      const response = await apiRequest("POST", "/api/submissions", {
+      const response = await apiRequest("POST", "/api/v1/submissions", {
         assignmentId,
         studentId,
         content: data.submissionText,
@@ -243,7 +243,7 @@ export function StudentAssignmentDetailModal({
       if (completedAttachments.length > 0) {
         try {
           for (const attachment of completedAttachments) {
-            const response = await apiRequest("POST", `/api/submissions/${newSubmission.id}/attachments`, {
+            const response = await apiRequest("POST", `/api/v1/submissions/${newSubmission.id}/attachments`, {
               type: attachment.type,
               url: attachment.url,
               fileName: attachment.fileName || null,
@@ -263,10 +263,10 @@ export function StudentAssignmentDetailModal({
             }
           }
           
-          queryClient.invalidateQueries({ queryKey: ["/api/students"] });
-          queryClient.invalidateQueries({ queryKey: ["/api/submissions"] });
-          queryClient.invalidateQueries({ queryKey: ["/api/teacher/assignments"] });
-          queryClient.invalidateQueries({ queryKey: ["/api/admin/analytics"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/v1/users"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/v1/submissions"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/v1/assignments?teacher_id="] });
+          queryClient.invalidateQueries({ queryKey: ["/api/v1/analytics"] });
           
           toast({
             title: "Success",

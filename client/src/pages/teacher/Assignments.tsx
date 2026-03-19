@@ -85,25 +85,25 @@ export default function TeacherAssignments({ teacherId }: TeacherAssignmentsProp
   }, [viewMode]);
   
   const { data: assignments = [], isLoading } = useQuery<AssignmentWithCourse[]>({
-    queryKey: ["/api/teacher/assignments", teacherId],
+    queryKey: ["/api/v1/assignments?teacher_id=" + teacherId],
   });
 
   // Fetch all students assigned to this teacher across all courses
   const { data: assignedStudents = [] } = useQuery<AssignedStudent[]>({
-    queryKey: ["/api/teachers", teacherId, "students"],
+    queryKey: ["/api/v1/users?role=student&teacher_id=" + teacherId],
     enabled: !!teacherId,
   });
 
   const updateDueDateMutation = useMutation({
     mutationFn: async ({ assignmentId, dueDate }: { assignmentId: string; dueDate: Date }) => {
-      const response = await apiRequest("PATCH", `/api/assignments/${assignmentId}`, {
+      const response = await apiRequest("PATCH", `/api/v1/assignments/${assignmentId}`, {
         dueDate: dueDate.toISOString(),
       });
       return response.json();
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/teacher/assignments", teacherId] });
-      queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/assignments?teacher_id=" + teacherId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/courses"] });
       setDueDatePopoverOpen(null);
       toast({
         title: "Due date updated",

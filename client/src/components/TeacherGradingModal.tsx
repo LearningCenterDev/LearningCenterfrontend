@@ -29,7 +29,7 @@ export function TeacherGradingModal({ assignment, assignmentId, isOpen, onClose,
   const [editingSubmissions, setEditingSubmissions] = useState<Record<string, boolean>>({});
 
   const { data: submissions = [], isLoading } = useQuery<SubmissionForGrading[]>({
-    queryKey: [`/api/assignments/${assignmentId}/grading`],
+    queryKey: [`/api/v1/submissions/assignments/${assignmentId}/grading`],
     enabled: isOpen && !!assignmentId,
   });
 
@@ -53,7 +53,7 @@ export function TeacherGradingModal({ assignment, assignmentId, isOpen, onClose,
 
   const gradeMutation = useMutation({
     mutationFn: async ({ submissionId, score, feedback, gradedBy }: { submissionId: string; score: number; feedback: string; gradedBy: string }) => {
-      return await apiRequest("POST", `/api/grades`, { 
+      return await apiRequest("POST", `/api/v1/submissions/grades`, { 
         submissionId, 
         score, 
         feedback: feedback || undefined,
@@ -65,12 +65,12 @@ export function TeacherGradingModal({ assignment, assignmentId, isOpen, onClose,
       setEditingSubmissions(prev => ({ ...prev, [variables.submissionId]: false }));
       
       // Invalidate and refetch to get fresh data from the database
-      await queryClient.invalidateQueries({ queryKey: [`/api/assignments/${assignmentId}/grading`] });
-      queryClient.invalidateQueries({ queryKey: ["/api/submissions"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/grades"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/teacher/assignments"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/teacher/analytics"] }); // Update teacher analytics
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/analytics"] });
+      await queryClient.invalidateQueries({ queryKey: [`/api/v1/submissions/assignments/${assignmentId}/grading`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/submissions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/submissions/grades"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/assignments?teacher_id="] });
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/analytics"] }); 
+      queryClient.invalidateQueries({ queryKey: ["/api/v1/analytics"] });
       
       // Invalidate course assignments to update grading stats on course page
       if (assignment?.courseId) {
@@ -365,7 +365,7 @@ export function TeacherGradingModal({ assignment, assignmentId, isOpen, onClose,
                               <Card key={attachment.id} className="hover-elevate active-elevate-2">
                                 <CardContent className="p-3">
                                   <a
-                                    href={`/api/submissions/attachments/${attachment.id}/download`}
+                                    href={`/api/v1/submissions/attachments/${attachment.id}/download`}
                                     className="flex items-center gap-3"
                                     data-testid={`link-attachment-${attachment.id}`}
                                   >

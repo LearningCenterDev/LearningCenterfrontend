@@ -99,16 +99,16 @@ export function AssignmentDetailsModal({
     mimeType: string | null;
     createdAt: string | null;
   }>>({
-    queryKey: ["/api/assignments", assignment?.id, "attachments"],
+    queryKey: ["/api/v1/assignments", assignment?.id, "attachments"],
     enabled: !!assignment?.id && isOpen,
   });
 
   // Fetch submissions for this assignment (with grading data)
   const { data: submissions = [], isLoading: submissionsLoading } = useQuery<Submission[]>({
-    queryKey: ["/api/assignments", assignment?.id, "grading"],
+    queryKey: ["/api/v1/submissions/assignments", assignment?.id, "grading"],
     queryFn: async () => {
       if (!assignment?.id) return [];
-      const response = await fetch(`/api/assignments/${assignment.id}/grading`);
+      const response = await fetch(`/api/v1/submissions/assignments/${assignment.id}/grading`);
       if (!response.ok) {
         throw new Error("Failed to fetch submissions");
       }
@@ -127,7 +127,7 @@ export function AssignmentDetailsModal({
   }
 
   const { data: assignedStudents = [] } = useQuery<AssignedStudent[]>({
-    queryKey: ["/api/courses", courseId, "assigned-students", teacherId],
+    queryKey: ["/api/v1/courses", courseId, "assigned-students", teacherId],
     enabled: !!courseId && isOpen && !!teacherId,
   });
 
@@ -140,7 +140,7 @@ export function AssignmentDetailsModal({
   }
 
   const { data: individualMappings = [] } = useQuery<IndividualMapping[]>({
-    queryKey: ["/api/assignments", assignment?.id, "individual-mappings"],
+    queryKey: ["/api/v1/assignments", assignment?.id, "individual-mappings"],
     enabled: !!assignment?.id && isOpen && !!teacherId,
   });
 
@@ -170,7 +170,7 @@ export function AssignmentDetailsModal({
   // Update individual mappings mutation
   const updateMappingsMutation = useMutation({
     mutationFn: async (studentIds: string[]) => {
-      const response = await apiRequest("PUT", `/api/assignments/${assignment?.id}/individual-mappings`, {
+      const response = await apiRequest("PUT", `/api/v1/assignments/${assignment?.id}/individual-mappings`, {
         studentIds,
       });
       return response;
@@ -222,7 +222,7 @@ export function AssignmentDetailsModal({
   // Grade submission mutation
   const gradeMutation = useMutation({
     mutationFn: async ({ submissionId, grade, feedback, gradedBy }: { submissionId: string; grade: number; feedback: string; gradedBy: string }) => {
-      const response = await fetch(`/api/grades`, {
+      const response = await fetch(`/api/v1/submissions/grades`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -267,7 +267,7 @@ export function AssignmentDetailsModal({
   // Delete assignment mutation
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("DELETE", `/api/assignments/${assignment?.id}`);
+      const response = await apiRequest("DELETE", `/api/v1/assignments/${assignment?.id}`);
       return response;
     },
     onSuccess: () => {

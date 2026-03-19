@@ -65,7 +65,7 @@ export default function Assignments({ studentId }: AssignmentsProps) {
   const previousNotificationIdsRef = useRef<Set<string>>(new Set());
 
   const { data: assignments = [], isLoading: assignmentsLoading } = useQuery<Assignment[]>({
-    queryKey: ["/api/students", studentId, "assignments"],
+    queryKey: ["/api/v1/assignments?student_id=" + studentId],
   });
 
   const { data: courses = [], isLoading: coursesLoading } = useQuery<Course[]>({
@@ -73,12 +73,12 @@ export default function Assignments({ studentId }: AssignmentsProps) {
   });
 
   const { data: submissions = [], isLoading: submissionsLoading } = useQuery<Submission[]>({
-    queryKey: ["/api/students", studentId, "submissions"],
+    queryKey: ["/api/v1/submissions?student_id=" + studentId],
     enabled: !!studentId,
   });
 
   const { data: grades = [], isLoading: gradesLoading } = useQuery<Grade[]>({
-    queryKey: ["/api/grades/student", studentId],
+    queryKey: ["/api/v1/submissions/grades?student_id=" + studentId],
     enabled: !!studentId,
   });
 
@@ -140,7 +140,7 @@ export default function Assignments({ studentId }: AssignmentsProps) {
 
     if (newAssignmentNotifications.length > 0 && previousNotificationIdsRef.current.size > 0) {
       queryClient.invalidateQueries({ 
-        queryKey: ["/api/students", studentId, "assignments"] 
+        queryKey: ["/api/v1/assignments?student_id=" + studentId] 
       });
     }
 
