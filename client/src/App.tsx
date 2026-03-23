@@ -74,9 +74,11 @@ function AuthenticatedApp() {
 
   if (location.startsWith('/activate/')) {
     return (
-      <Switch>
-        <Route path="/activate/:token" component={ActivationPage} />
-      </Switch>
+      <Suspense fallback={<PageLoader />}>
+        <Switch>
+          <Route path="/activate/:token" component={ActivationPage} />
+        </Switch>
+      </Suspense>
     );
   }
 
@@ -141,7 +143,9 @@ function AuthenticatedApp() {
     <>
       <ScrollToTop />
       <DashboardLayout>
-        <AppRoutes />
+        <Suspense fallback={<PageLoader />}>
+          <AppRoutes />
+        </Suspense>
       </DashboardLayout>
 
       <PasswordResetDialog

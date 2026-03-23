@@ -22,13 +22,7 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('framer-motion')) return 'vendor-animation';
-            if (id.includes('recharts')) return 'vendor-charts';
-            if (id.includes('@radix-ui') || id.includes('lucide-react')) return 'vendor-ui';
-            if (id.includes('react') || id.includes('react-dom')) return 'vendor-react';
-            if (id.includes('@tanstack')) return 'vendor-query';
-            if (id.includes('drizzle') || id.includes('zod')) return 'vendor-data';
-            return 'vendor-core';
+            return 'vendor';
           }
         }
       }
