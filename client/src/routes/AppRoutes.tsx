@@ -2,76 +2,76 @@ import React from "react";
 import { Switch, Route } from "wouter";
 import { useAuth } from "../hooks/useAuth";
 import type { User as SchemaUser } from "@shared/schema";
-import NotFound from "@/pages/not-found";
+const NotFound = React.lazy(() => import("@/pages/not-found").then(m => m.default ? m : { default: Object.values(m)[0] }));
 import { CourseDetails } from "@/components/CourseDetails";
 import { useLocation } from "wouter";
 
 // Dashboard Components
-import StudentDashboard from "@/components/StudentDashboard";
-import TeacherDashboard from "@/components/TeacherDashboard";
-import ParentDashboard from "@/components/ParentDashboard";
-import AdminDashboard from "@/components/AdminDashboard";
-import FinanceAdminDashboard from "@/components/FinanceAdminDashboard";
-import PartnerAdminDashboard from "@/components/PartnerAdminDashboard";
+const StudentDashboard = React.lazy(() => import("@/components/StudentDashboard").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const TeacherDashboard = React.lazy(() => import("@/components/TeacherDashboard").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const ParentDashboard = React.lazy(() => import("@/components/ParentDashboard").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminDashboard = React.lazy(() => import("@/components/AdminDashboard").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const FinanceAdminDashboard = React.lazy(() => import("@/components/FinanceAdminDashboard").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const PartnerAdminDashboard = React.lazy(() => import("@/components/PartnerAdminDashboard").then(m => m.default ? m : { default: Object.values(m)[0] }));
 
 // Student Pages
-import StudentMyCourses from "@/pages/student/MyCourses";
-import StudentBrowseCourses from "@/pages/student/BrowseCourses";
-import StudentAssignments from "@/pages/student/Assignments";
-import StudentSchedule from "@/pages/student/Schedule";
-import StudentMessages from "@/pages/student/Messages";
-import StudentProgress from "@/pages/student/Progress";
+const StudentMyCourses = React.lazy(() => import("@/pages/student/MyCourses").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const StudentBrowseCourses = React.lazy(() => import("@/pages/student/BrowseCourses").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const StudentAssignments = React.lazy(() => import("@/pages/student/Assignments").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const StudentSchedule = React.lazy(() => import("@/pages/student/Schedule").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const StudentMessages = React.lazy(() => import("@/pages/student/Messages").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const StudentProgress = React.lazy(() => import("@/pages/student/Progress").then(m => m.default ? m : { default: Object.values(m)[0] }));
 
 // Teacher Pages
-import TeacherMyCourses from "@/pages/teacher/MyCourses";
-import TeacherCoursePage from "@/pages/teacher/TeacherCoursePage";
-import TeacherAssignments from "@/pages/teacher/Assignments";
-import TeacherStudents from "@/pages/teacher/Students";
-import StudentDetailPage from "@/pages/teacher/StudentDetailPage";
-import TeacherMessages from "@/pages/teacher/Messages";
-import TeacherSchedule from "@/pages/teacher/Schedule";
-import TeacherAnalytics from "@/pages/teacher/Analytics";
+const TeacherMyCourses = React.lazy(() => import("@/pages/teacher/MyCourses").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const TeacherCoursePage = React.lazy(() => import("@/pages/teacher/TeacherCoursePage").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const TeacherAssignments = React.lazy(() => import("@/pages/teacher/Assignments").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const TeacherStudents = React.lazy(() => import("@/pages/teacher/Students").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const StudentDetailPage = React.lazy(() => import("@/pages/teacher/StudentDetailPage").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const TeacherMessages = React.lazy(() => import("@/pages/teacher/Messages").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const TeacherSchedule = React.lazy(() => import("@/pages/teacher/Schedule").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const TeacherAnalytics = React.lazy(() => import("@/pages/teacher/Analytics").then(m => m.default ? m : { default: Object.values(m)[0] }));
 
 // Parent Pages
-import ParentChildProgress from "@/pages/parent/ChildProgress";
-import ParentMessages from "@/pages/parent/Messages";
-import ParentReports from "@/pages/parent/Reports";
-import ParentSchedule from "@/pages/parent/Schedule";
-import ParentPayments from "@/pages/parent/Payments";
+const ParentChildProgress = React.lazy(() => import("@/pages/parent/ChildProgress").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const ParentMessages = React.lazy(() => import("@/pages/parent/Messages").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const ParentReports = React.lazy(() => import("@/pages/parent/Reports").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const ParentSchedule = React.lazy(() => import("@/pages/parent/Schedule").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const ParentPayments = React.lazy(() => import("@/pages/parent/Payments").then(m => m.default ? m : { default: Object.values(m)[0] }));
 
 // Admin Pages
-import AdminUserManagement from "@/pages/admin/UserManagement";
-import AdminUserDetailPage from "@/pages/admin/UserDetailPage";
-import AdminCourseManagement from "@/pages/admin/CourseManagement";
-import AdminCoursePage from "@/pages/admin/AdminCoursePage";
-import AdminFinancialReports from "@/pages/admin/FinancialReports";
-import AdminSystemAnalytics from "@/pages/admin/SystemAnalytics";
-import AdminSettings from "@/pages/admin/Settings";
-import DocumentManagement from "@/pages/admin/DocumentManagement";
-import AdminMessages from "@/pages/admin/Messages";
-import AdminSchedule from "@/pages/admin/Schedule";
-import AdminFeeAssignments from "@/pages/admin/FeeAssignments";
-import AdminInvoices from "@/pages/admin/Invoices";
-import AdminPayments from "@/pages/admin/Payments";
-import AdminPasswordResetRequests from "@/pages/admin/PasswordResetRequests";
-import AdminProspectStudents from "@/pages/admin/ProspectStudents";
-import TeacherSessionStats from "@/pages/admin/TeacherSessionStats";
-import PartnerManagement from "@/pages/admin/PartnerManagement";
-import PartnerDetails from "@/pages/admin/PartnerDetails";
+const AdminUserManagement = React.lazy(() => import("@/pages/admin/UserManagement").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminUserDetailPage = React.lazy(() => import("@/pages/admin/UserDetailPage").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminCourseManagement = React.lazy(() => import("@/pages/admin/CourseManagement").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminCoursePage = React.lazy(() => import("@/pages/admin/AdminCoursePage").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminFinancialReports = React.lazy(() => import("@/pages/admin/FinancialReports").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminSystemAnalytics = React.lazy(() => import("@/pages/admin/SystemAnalytics").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminSettings = React.lazy(() => import("@/pages/admin/Settings").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const DocumentManagement = React.lazy(() => import("@/pages/admin/DocumentManagement").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminMessages = React.lazy(() => import("@/pages/admin/Messages").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminSchedule = React.lazy(() => import("@/pages/admin/Schedule").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminFeeAssignments = React.lazy(() => import("@/pages/admin/FeeAssignments").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminInvoices = React.lazy(() => import("@/pages/admin/Invoices").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminPayments = React.lazy(() => import("@/pages/admin/Payments").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminPasswordResetRequests = React.lazy(() => import("@/pages/admin/PasswordResetRequests").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const AdminProspectStudents = React.lazy(() => import("@/pages/admin/ProspectStudents").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const TeacherSessionStats = React.lazy(() => import("@/pages/admin/TeacherSessionStats").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const PartnerManagement = React.lazy(() => import("@/pages/admin/PartnerManagement").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const PartnerDetails = React.lazy(() => import("@/pages/admin/PartnerDetails").then(m => m.default ? m : { default: Object.values(m)[0] }));
 
 // Finance Admin Pages
-import FinanceUsers from "@/pages/finance/Users";
-import FinanceCourses from "@/pages/finance/Courses";
-import FinanceMessages from "@/pages/finance/Messages";
-import FinancePayments from "@/pages/finance/Payments";
-import FinanceReports from "@/pages/finance/Reports";
+const FinanceUsers = React.lazy(() => import("@/pages/finance/Users").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const FinanceCourses = React.lazy(() => import("@/pages/finance/Courses").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const FinanceMessages = React.lazy(() => import("@/pages/finance/Messages").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const FinancePayments = React.lazy(() => import("@/pages/finance/Payments").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const FinanceReports = React.lazy(() => import("@/pages/finance/Reports").then(m => m.default ? m : { default: Object.values(m)[0] }));
 
 // Partner Admin Pages
-import PartnerAdminUsers from "@/pages/partner_admin/Users";
-import PartnerAdminProspectStudents from "@/pages/partner_admin/ProspectStudents";
+const PartnerAdminUsers = React.lazy(() => import("@/pages/partner_admin/Users").then(m => m.default ? m : { default: Object.values(m)[0] }));
+const PartnerAdminProspectStudents = React.lazy(() => import("@/pages/partner_admin/ProspectStudents").then(m => m.default ? m : { default: Object.values(m)[0] }));
 
 // Common Pages
-import Profile from "@/pages/Profile";
+const Profile = React.lazy(() => import("@/pages/Profile").then(m => m.default ? m : { default: Object.values(m)[0] }));
 
 function CourseDetailWithBackButton({ courseId, currentUser }: { courseId: string; currentUser: SchemaUser }) {
     const [, navigate] = useLocation();

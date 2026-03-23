@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import { Switch, Route, useLocation, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -15,21 +16,34 @@ import ScrollToTop from "@/components/ScrollToTop";
 import FloatingThemeToggle from "@/components/FloatingThemeToggle";
 
 // Public Pages
-import Landing from "@/pages/Landing";
-import Login from "@/pages/Login";
-import About from "@/pages/About";
-import Courses from "@/pages/Courses";
-import CourseDetail from "@/pages/CourseDetail";
-import Contact from "@/pages/Contact";
-import Resources from "@/pages/Resources";
-import Careers from "@/pages/Careers";
-import Privacy from "@/pages/Privacy";
-import Terms from "@/pages/Terms";
-import ThankYou from "@/pages/ThankYou";
-import Experts from "@/pages/Experts";
-import ExpertDetail from "@/pages/ExpertDetail";
-import ActivationPage from "@/pages/ActivationPage";
+const Landing = React.lazy(() => import("@/pages/Landing").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const Login = React.lazy(() => import("@/pages/Login").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const About = React.lazy(() => import("@/pages/About").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const Courses = React.lazy(() => import("@/pages/Courses").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const CourseDetail = React.lazy(() => import("@/pages/CourseDetail").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const Contact = React.lazy(() => import("@/pages/Contact").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const Resources = React.lazy(() => import("@/pages/Resources").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const Careers = React.lazy(() => import("@/pages/Careers").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const Privacy = React.lazy(() => import("@/pages/Privacy").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const Terms = React.lazy(() => import("@/pages/Terms").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const ThankYou = React.lazy(() => import("@/pages/ThankYou").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const Experts = React.lazy(() => import("@/pages/Experts").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const ExpertDetail = React.lazy(() => import("@/pages/ExpertDetail").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
+const ActivationPage = React.lazy(() => import("@/pages/ActivationPage").then(m => ({ default: m.default || Object.values(m)[0] } as any)));
 import logoImage from "@assets/Favicon.png";
+
+function PageLoader() {
+  return (
+    <div className="fixed inset-0 bg-[#f8fafb] dark:bg-[#0f1d34] flex items-center justify-center z-[100]">
+      <div className="text-center relative">
+        <div className="relative p-2 bg-white rounded-full shadow-lg">
+          <div className="absolute inset-0 rounded-full border-2 border-primary/20 animate-spin"></div>
+          <img src={logoImage} alt="Loading..." className="w-16 h-16 relative z-10 opacity-50" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function AuthenticatedApp() {
   const { user, isLoading, isAuthenticated, logout, isLoggingOut } = useAuth();
@@ -101,22 +115,24 @@ function AuthenticatedApp() {
       <>
         <ScrollToTop />
         <FloatingThemeToggle />
-        <Switch>
-          <Route path="/login" component={Login} />
-          <Route path="/about" component={About} />
-          <Route path="/courses" component={Courses} />
-          <Route path="/course/:id" component={CourseDetail} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/resources" component={Resources} />
-          <Route path="/careers" component={Careers} />
-          <Route path="/privacy" component={Privacy} />
-          <Route path="/terms" component={Terms} />
-          <Route path="/thank-you" component={ThankYou} />
-          <Route path="/experts/:teacherId" component={({ params }) => <ExpertDetail teacherId={params.teacherId} />} />
-          <Route path="/experts" component={Experts} />
-          <Route path="/" component={Landing} />
-          <Route component={() => <Redirect to="/login" />} />
-        </Switch>
+        <Suspense fallback={<PageLoader />}>
+          <Switch>
+            <Route path="/login" component={Login} />
+            <Route path="/about" component={About} />
+            <Route path="/courses" component={Courses} />
+            <Route path="/course/:id" component={CourseDetail} />
+            <Route path="/contact" component={Contact} />
+            <Route path="/resources" component={Resources} />
+            <Route path="/careers" component={Careers} />
+            <Route path="/privacy" component={Privacy} />
+            <Route path="/terms" component={Terms} />
+            <Route path="/thank-you" component={ThankYou} />
+            <Route path="/experts/:teacherId" component={({ params }) => <ExpertDetail teacherId={params.teacherId} />} />
+            <Route path="/experts" component={Experts} />
+            <Route path="/" component={Landing} />
+            <Route component={() => <Redirect to="/login" />} />
+          </Switch>
+        </Suspense>
       </>
     );
   }
